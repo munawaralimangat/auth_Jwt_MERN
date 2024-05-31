@@ -4,6 +4,7 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { ToastContainer,toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import Board from './Board';
 
 const Home = () => {
     const navigate = useNavigate()
@@ -45,6 +46,7 @@ const Home = () => {
         <div className="bg-white p-6 rounded shadow-md">
           <h2 className="text-2xl font-bold mb-4">Dashboard Kanban</h2>
           <p>This is where your main content will go.{userName}</p>
+          <Board />
         </div>
       </main>
       <button onClick={Logout}>LOGOUT</button>

@@ -77,6 +77,7 @@ const Login = () => {
               onChange={handleOnChange}
               className="w-full px-3 py-2 border rounded"
               required
+              autoComplete="email"
             />
           </div>
           <div className="mb-6">
@@ -89,6 +90,7 @@ const Login = () => {
               onChange={handleOnChange}
               className="w-full px-3 py-2 border rounded"
               required
+              autoComplete="current-password"
             />
           </div>
           <button
