@@ -1,12 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    tasks: {
-        'task-1': { id: 'task-1', content: 'Take out the garbage' },
-        'task-2': { id: 'task-2', content: 'Watch my favorite show' },
-        'task-3': { id: 'task-3', content: 'Charge my phone' },
-        'task-4': { id: 'task-4', content: 'Cook dinner' },
-    },
+    tasks: {},
     columns: {
         'column-1': {
             id: 'column-1',
@@ -72,6 +67,10 @@ const kanbanSlice = createSlice({
             state.columns[newFinish.id] = newFinish;
         },
     },
+    addTask:(state,action) =>{
+        const {id,content,columnId} = action.payload;
+        const newTask = {id,content};
+    }
 });
 
 export const { moveTask } = kanbanSlice.actions;
