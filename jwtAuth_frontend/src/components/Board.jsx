@@ -1,7 +1,7 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { moveTask } from '../redux/kanbanSlice';
+import { moveTask,addTask } from '../redux/kanbanSlice';
 import Column from './Column';
 
 function Board () {
@@ -20,6 +20,21 @@ function Board () {
     dispatch(moveTask({ source, destination, draggableId }));
   };
 
+  const handleAddTask = (columnId) =>{
+    const id = Date.now().toString()
+    const content = prompt('enter task')
+    if(content){
+      dispatch(addTask({id,content,columnId}))
+    }
+  }
+  const handleDeleteTask = ()=>{
+
+  }
+
+  const handleUpdateTask = ()=>{
+
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -27,7 +42,17 @@ function Board () {
           const column = columns[columnId];
           const taskList = column.taskIds.map((taskId) => tasks[taskId]);
 
-          return <Column key={column.id} column={column} tasks={taskList} />;
+          return (
+            <div key={column.id}>
+                        <Column
+                            column={column}
+                            tasks={taskList}
+                            onDeleteTask={handleDeleteTask}
+                            onUpdateTask={handleUpdateTask}
+                        />
+                <button onClick={() => handleAddTask(column.id)}>Add Task</button>
+            </div>
+        )
         })}
       </div>
     </DragDropContext>

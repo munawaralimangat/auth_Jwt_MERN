@@ -6,7 +6,7 @@ const initialState = {
         'column-1': {
             id: 'column-1',
             title: 'To Do',
-            taskIds: ['task-1', 'task-2', 'task-3', 'task-4'],
+            taskIds: [],
         },
         'column-2': {
             id: 'column-2',
@@ -66,12 +66,14 @@ const kanbanSlice = createSlice({
             state.columns[newStart.id] = newStart;
             state.columns[newFinish.id] = newFinish;
         },
-    },
-    addTask:(state,action) =>{
-        const {id,content,columnId} = action.payload;
-        const newTask = {id,content};
+        addTask:(state,action) =>{
+            const {id,content,columnId} = action.payload;
+            const newTask = {id,content};
+            state.tasks[id] = newTask
+            state.columns[columnId].taskIds.push(id)
+        }
     }
 });
 
-export const { moveTask } = kanbanSlice.actions;
+export const { moveTask,addTask } = kanbanSlice.actions;
 export default kanbanSlice.reducer;
