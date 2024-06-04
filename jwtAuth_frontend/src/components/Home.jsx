@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -8,12 +7,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies(['token']);
     const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        const verifyCookie = async () => {
-            if (!cookies.token) {
+        const verifyToken = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
                 console.log('No token found, redirecting to login');
                 navigate('/login');
                 return;
@@ -22,7 +21,11 @@ const Home = () => {
                 const { data } = await axios.post(
                     "http://localhost:5000",
                     {},
-                    { withCredentials: true }
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
                 );
                 const { status, user } = data;
                 if (status) {
@@ -31,25 +34,22 @@ const Home = () => {
                         position: "top-right",
                     });
                 } else {
-                    removeCookie("token");
+                    console.log('Token verification failed, redirecting to login');
+                    localStorage.removeItem('token');
                     navigate("/login");
                 }
             } catch (error) {
                 console.error('Verification failed, redirecting to login', error);
-                removeCookie("token");
+                localStorage.removeItem('token');
                 navigate("/login");
             }
         };
 
-        verifyCookie();
-
-        return () => {
-            console.log('Cleaning up');
-        };
-    }, [cookies, navigate, removeCookie]);
+        verifyToken();
+    }, [navigate]);
 
     const Logout = () => {
-        removeCookie("token");
+        localStorage.removeItem('token');
         navigate("/signup");
     };
 
@@ -59,7 +59,7 @@ const Home = () => {
                 <div className="bg-white p-6 rounded shadow-md">
                     <h2 className="text-2xl font-bold mb-4">Dashboard Kanban</h2>
                     <p>This is where your main content will go. {userName}</p>
-                    <Board />
+                    <Board user={'user'}/>
                 </div>
             </main>
             <button

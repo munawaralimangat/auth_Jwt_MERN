@@ -2,64 +2,64 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
-  const navigate = useNavigate()
-  const [inputValue,setInputValue] = useState({
-    email:"",
-    password:""
-  })
-  const {email,password} = inputValue
-  
-  const handleOnChange = (e)=>{
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState({
+    email: "",
+    password: ""
+  });
+  const { email, password } = inputValue;
+
+  const handleOnChange = (e) => {
     const { name, value } = e.target;
     setInputValue({
-        ...inputValue,
-        [name]:value
-      })
-  }
-  const handleError = (err)=>{
-    toast.error(err,{
-        position:"bottom-left"
-    })
-  }
-  const handleSuccess = (msg)=>{
-    toast.success(msg,{
-        position:"bottom-right"
-    })
-  }
+      ...inputValue,
+      [name]: value
+    });
+  };
+
+  const handleError = (err) => {
+    toast.error(err, {
+      position: "bottom-left"
+    });
+  };
+
+  const handleSuccess = (msg) => {
+    toast.success(msg, {
+      position: "bottom-right"
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic
     try {
-        const {data} = await axios.post(
-            "http://localhost:5000/login",
-            {
-            ...inputValue
-            },
-            {
-                withCredentials:true
-            }
-        )
-       
-        const {message,success} = data
-        if(success){
-            handleSuccess(message)
-            setTimeout(()=>{
-                navigate('/')
-            },1000)
-        }else{
-            console.log('errrrrr')
-            handleError(message)
-        }
+      const { data } = await axios.post(
+        "http://localhost:5000/login",
+        { ...inputValue },
+        { withCredentials: true }
+      );
+
+      const { message, success, token, user } = data;
+      if (success) {
+        handleSuccess(`${message}, ${user.userName}`);
+        localStorage.setItem('token', token);
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        handleError(message);
+      }
     } catch (error) {
-        console.error(error);
+      handleError('An error occurred while logging in');
+      console.error(error);
     }
+
     setInputValue({
-        ...inputValue,
-        email: "",
-        password: "",
-      });
+      email: "",
+      password: ""
+    });
   };
 
   return (
@@ -101,7 +101,7 @@ const Login = () => {
           </button>
         </form>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };
